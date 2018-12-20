@@ -1,0 +1,21 @@
+Set objDictionary = CreateObject("Scripting.Dictionary") 
+ 
+strComputer = "." 
+Set objWMIService = GetObject("winmgmts:" _ 
+    & "{impersonationLevel=impersonate}!\\" & strComputer & "\root\cimv2") 
+ 
+Set colPrinters =  objWMIService.ExecQuery _ 
+    ("Select * from Win32_Printer") 
+ 
+For Each objPrinter in colPrinters  
+    objDictionary.Add objPrinter.PortName, objPrinter.PortName 
+Next 
+ 
+Set colPorts = objWMIService.ExecQuery _ 
+    ("Select * from Win32_TCPIPPrinterPort") 
+For Each objPort in colPorts 
+    If objDictionary.Exists(objPort.Name) Then 
+    Else 
+        ObjPort.Delete_ 
+    End If 
+Next 
